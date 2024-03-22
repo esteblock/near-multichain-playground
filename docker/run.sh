@@ -32,8 +32,8 @@ docker run --volume ${currentDir}:/workspace \
            --detach \
            --publish-all \
            --memory=12g \
+           --env-file .env \
            ${imageName}:${versionTag}
-        #    --env-file .env \
 
 # Set the git config
 # docker exec $containerName git config --global --add safe.directory /workspace

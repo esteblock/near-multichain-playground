@@ -1,4 +1,5 @@
 import nearAPI from 'near-api-js';
+import { parseSeedPhrase } from'near-seed-phrase';
 
 export async function init() {
     // creates keyStore from a private key string
@@ -6,14 +7,14 @@ export async function init() {
     
     const { keyStores, KeyPair } = nearAPI;
     const myKeyStore = new keyStores.InMemoryKeyStore();
-    const PRIVATE_KEY =
-      "by8kdJoJHu7uUkKfoaLd2J2Dp1q1TigeWMG123pHdu9UREqPcshCM223kWadm";
-    // creates a public / private key pair using the provided private key
-    const keyPair = KeyPair.fromString(PRIVATE_KEY);
+    const SEED_PHRASE = process.env.SEED_PHRASE;
+    const ACCOUNT_NAME = process.env.ACCOUNT_NAME;
+    const { publicKey, secretKey } = parseSeedPhrase(SEED_PHRASE);
+
+    
+    const keyPair = KeyPair.fromString(secretKey);
     // adds the keyPair you created to keyStore
     await myKeyStore.setKey("testnet", "example-account.testnet", keyPair);
-    
-    console.log("🚀 ~ Hello World")
 
 }
 await init();
