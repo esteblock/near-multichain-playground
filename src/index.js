@@ -1,5 +1,7 @@
 import nearAPI from 'near-api-js';
-import { parseSeedPhrase } from'near-seed-phrase';
+import { parseSeedPhrase } from 'near-seed-phrase';
+import { Ethereum } from './services/ethereum.js';
+
 
 export async function init() {
     // creates keyStore from a private key string
@@ -16,10 +18,6 @@ export async function init() {
     // adds the keyPair you created to keyStore
     await myKeyStore.setKey("testnet", "example-account.testnet", keyPair);
 
-    const receiver = "0xe0f3B7e68151E9306727104973752A415c2bcbEb";
-    const amount = 0.01;
-
-    
     const connectionConfig = {
         networkId: "testnet",
         keyStore: myKeyStore, // first create a key store
@@ -29,19 +27,25 @@ export async function init() {
         explorerUrl: "https://testnet.nearblocks.io",
     };
     const nearConnection = await connect(connectionConfig);
-     
-    // wallet.value = new WalletConnection(
-    //     near.value,
-    //     `${appKeyPrefix.value}-${networkId}`
-    //   );
-
     const appKeyPrefix = "";
     const networkId= "testnet"
 
-    //   // create wallet connection
-      const walletConnection = new WalletConnection(
-        nearConnection,
-        `${appKeyPrefix.value}-${networkId}`);
+    const walletConnection = new WalletConnection(
+    nearConnection,
+    `${appKeyPrefix}-${networkId}`);
+    console.log("🚀 ~ init ~ walletConnection:", walletConnection)
+
+
+    // ETHEREUM - SEPOLIA
+    const receiver = "0xe0f3B7e68151E9306727104973752A415c2bcbEb";
+    const amount = 0.01;
+    const derivationPath = "test"
+
+    const Sepolia = 11155111;
+    const Eth = new Ethereum('https://rpc2.sepolia.org', Sepolia);
+    const { address } = await Eth.deriveAddress(ACCOUNT_NAME, derivationPath);
+    console.log("🚀 ~ init ~ address:", address)
+
 
 }
 await init();

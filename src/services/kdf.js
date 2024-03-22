@@ -1,9 +1,13 @@
 import { base_decode } from 'near-api-js/lib/utils/serialize';
-import { ec as EC } from 'elliptic';
+
+import pkg from 'elliptic';
+const { ec: EC } = pkg;
+
 import BN from 'bn.js';
 import keccak from 'keccak';
 import hash from 'hash.js';
 import bs58check from 'bs58check';
+import crypto from "crypto"
 
 const rootPublicKey = 'secp256k1:4HFcTSodRLVCGNVcGc4Mf2fwBBBxv9jxkGdiW2S2CA1y6UpVVRWKj6RX7d7TDt65k2Bj3w9FU4BGtt43ZvuhCnNt';
 
