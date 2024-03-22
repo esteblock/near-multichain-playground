@@ -16,7 +16,7 @@ export async function init() {
     
     const keyPair = KeyPair.fromString(secretKey);
     // adds the keyPair you created to keyStore
-    await myKeyStore.setKey("testnet", "example-account.testnet", keyPair);
+    await myKeyStore.setKey("testnet", ACCOUNT_NAME, keyPair);
 
     const connectionConfig = {
         networkId: "testnet",
@@ -38,14 +38,29 @@ export async function init() {
 
     // ETHEREUM - SEPOLIA
     const receiver = "0xe0f3B7e68151E9306727104973752A415c2bcbEb";
-    const amount = 0.01;
+    const amount = 0.001;
     const derivationPath = "test"
 
     const Sepolia = 11155111;
     const Eth = new Ethereum('https://rpc2.sepolia.org', Sepolia);
     const { address } = await Eth.deriveAddress(ACCOUNT_NAME, derivationPath);
     console.log("🚀 ~ init ~ address:", address)
+    const balance = await Eth.getBalance(address);
+    console.log("🚀 ~ init ~ balance:", balance)
+    
+    const senderAddress = address;
+    const { transaction, payload } = await Eth.createPayload(senderAddress, receiver, amount);
+    
+    const MPC_CONTRACT = 'multichain-testnet-2.testnet';
+    console.log(`🕒 Asking ${MPC_CONTRACT} to sign the transaction, this might take a while`)
 
+    const account = await nearConnection.account(ACCOUNT_NAME);
+    console.log("🚀 ~ init ~ account:", account)
+    const signedTransaction = await Eth.requestSignatureToMPC(account, MPC_CONTRACT, derivationPath, payload, transaction, senderAddress);
+    console.log("🚀 ~ init ~ signedTransaction:", signedTransaction)
+
+    const txHash = await Eth.relayTransaction(signedTransaction);
+    console.log("🚀 ~ init ~ txHash:", txHash)
 
 }
 await init();
